@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "my auth server",
   "main": "index.js",
-  "dependencies": {},
   "devDependencies": {
     "typings": "^2.0.0"
   },
