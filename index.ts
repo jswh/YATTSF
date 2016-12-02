@@ -8,7 +8,10 @@ app.route('get', '/', (req:HttpRequest, res:HttpResponse) => {
     res.setContent({code:0, msg:'hello world'});
 });
 
-app.route('get', '/login', (req:HttpRequest, res:HttpResponse) => {
-    
+app.route('post', '/login', (req:HttpRequest, res:HttpResponse) => {
+    let username = req.query['username'];
+    let password = req.query['password'];
+    //authcheck
+    res.setContent('hehe');
 });
 app.start();

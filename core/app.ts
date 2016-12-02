@@ -16,7 +16,7 @@ export class App {
     constructor() {
         this.httpServer = http.createServer((request, response) => {
             let req = new HttpRequest(request), res = new HttpResponse(response);
-            let func = this.routers[request.method.toLowerCase()][req.getPath()];
+            let func = this.routers[request.method.toLowerCase()][req.path];
             if(!func) {
                 func = this.routers.default;
             }
