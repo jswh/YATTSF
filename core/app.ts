@@ -7,9 +7,9 @@ export class App {
         post: {
         },
         get: {
-            '/': (req: HttpRequest, res: HttpResponse) => {res.setContent('Hello World !')}
+            '/': (req: HttpRequest, res: HttpResponse, next) => {res.setContent('Hello World !');next();}
         },
-        default: (req: HttpRequest, res: HttpResponse) => {res.setStatusCode(404);}
+        default: (req: HttpRequest, res: HttpResponse, next) => {res.setStatusCode(404);next();}
     };
     private httpServer: http.Server;
 
@@ -17,13 +17,15 @@ export class App {
         this.httpServer = http.createServer((request, response) => {
             let req = new HttpRequest(request), res = new HttpResponse(response);
             let func = this.routers[request.method.toLowerCase()][req.path];
+            var next = () {
+                res.send();
+            }
             if(!func) {
                 func = this.routers.default;
             }
             if (typeof(func) == 'function') {
-                func(req, res);
+                func(req, res, next);
             }
-            res.send();
         });
     }
 
