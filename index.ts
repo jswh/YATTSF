@@ -1,22 +1,26 @@
 /// <reference path="./typings/globals/node/index.d.ts" />
 import * as http from 'http';
+import * as core from './libs/core';
+
 const routers = {
     'post': {
-        '/': (req: http.IncomingMessage, res: http.ServerResponse) => {res.write('Hello World !')}
     },
     'get': {
-
+        '/': (req: http.IncomingMessage, res: http.ServerResponse) => {res.write('Hello World !')}
     },
     'default': (req: http.IncomingMessage, res: http.ServerResponse) => {res.writeHead(404);}
 }; 
-http.createServer((req, res) => {
-    res.setHeader('Content-Type', 'application/json');
+http.createServer((request, response) => {
+    response.setHeader('Content-Type', 'application/json');
     let found = false;
-    for (let path in routers[req.method.toLowerCase()]) {
-        
+    let req = new core.RequestHelper(request);
+    let requestPath = req.getPath();
+    let func = routers[request.method.toLowerCase()][req.getPath()];
+    if(!func) {
+        func = routers.default;
     }
-    if (!found && typeof(routers['default']) == 'function') {
-        routers.default(req, res);
+    if (typeof(func) == 'function') {
+        func(request, response);
     }
-    res.end();
+    response.end();
 }).listen(3000, '127.0.0.1');
