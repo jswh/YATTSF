@@ -1,7 +1,7 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
 import * as http from 'http';
-export class RequestHelper {
-    raw: http.IncomingMessage
+export class HttpRequest {
+    private raw: http.IncomingMessage
 
     constructor(req:http.IncomingMessage) {
         this.raw = req;
