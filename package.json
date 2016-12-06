@@ -15,5 +15,10 @@
     "url": "git@git.coding.net:jswh/JAuth.git"
   },
   "author": "jswh",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.12.0",
+    "reflect-metadata": "^0.1.8",
+    "typeorm": "0.0.3-alpha.9"
+  }
 }

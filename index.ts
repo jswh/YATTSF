@@ -21,4 +21,7 @@ app.route('post', '/login', (req:HttpRequest, res:HttpResponse, next) => {
     });
 });
 
+app.route('post', 'register', (req:HttpRequest, res:HttpResponse, next) => {
+    
+});
 app.start();

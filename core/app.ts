@@ -2,6 +2,8 @@
 import * as http from 'http';
 import {HttpRequest} from './Request';
 import {HttpResponse} from './Response'
+import "reflect-metadata";
+
 export class App {
     private routers = {
         post: {
