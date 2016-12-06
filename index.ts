@@ -1,27 +1,23 @@
 import * as fs from "fs";
+import core from "./core";
 import {App} from './core/App';
 import {HttpRequest} from './core/Request';
 import {HttpResponse} from './core/Response';
 import {View} from './core/View';
 
-const app = new App();
-const view = new View(fs.realpathSync('./views'));
+const app = new core.App();
+const view = new core.View(fs.realpathSync('./views'));
 
-app.route('get', '/', (req:HttpRequest, res:HttpResponse) => {
-    res.setContent({code:0, msg:'hello world'});
-});
+class Controller {
+    constructor() {
 
-app.route('post', '/login', (req:HttpRequest, res:HttpResponse, next) => {
-    let username = req.query['username'];
-    let password = req.query['password'];
-    //authcheck
-    view.render('index', (data) => {
-        res.setContent(data);
+    }
+
+    @core.Router.route("GET", '/')
+    hello(req:HttpRequest, res:HttpResponse, next) {
+        res.setContent('hello');
         next();
-    });
-});
-
-app.route('post', 'register', (req:HttpRequest, res:HttpResponse, next) => {
-    
-});
+    }
+}
+var c = new Controller();
 app.start();

@@ -1,38 +1,25 @@
 /// <reference path="../typings/globals/node/index.d.ts" />
 import * as http from 'http';
 import {HttpRequest} from './Request';
-import {HttpResponse} from './Response'
+import {HttpResponse} from './Response';
 import "reflect-metadata";
+import * as router from './Router';
 
 export class App {
-    private routers = {
-        post: {
-        },
-        get: {
-            '/': (req: HttpRequest, res: HttpResponse, next) => {res.setContent('Hello World !');next();}
-        },
-        default: (req: HttpRequest, res: HttpResponse, next) => {res.setStatusCode(404);next();}
-    };
     private httpServer: http.Server;
 
     constructor() {
         this.httpServer = http.createServer((request, response) => {
             let req = new HttpRequest(request), res = new HttpResponse(response);
-            let func = this.routers[request.method.toLowerCase()][req.path];
-            var next = () {
-                res.send();
-            }
+            let func = router.mapping(req.method ,req.path)
+            let next = () => {res.send();}
             if(!func) {
-                func = this.routers.default;
-            }
-            if (typeof(func) == 'function') {
+                res.setStatusCode(404);
+                next();
+            } else {
                 func(req, res, next);
             }
         });
-    }
-
-    route(method = 'get', url:string, func: Function) {
-        this.routers[method][url] = func;
     }
 
     start() {
