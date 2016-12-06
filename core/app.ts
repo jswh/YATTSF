@@ -7,7 +7,7 @@ import * as router from './Router';
 
 export class App {
     private httpServer: http.Server;
-
+    private controllers = [];
     constructor() {
         this.httpServer = http.createServer((request, response) => {
             let req = new HttpRequest(request), res = new HttpResponse(response);
@@ -24,5 +24,11 @@ export class App {
 
     start() {
         this.httpServer.listen(3000, '127.0.0.1')
+    }
+
+    register(controllers) {
+        for(let controller of controllers) {
+            this.controllers.push(controller.default());
+        }
     }
 }
