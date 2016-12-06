@@ -1,8 +1,8 @@
 import * as fs from "fs";
-import core from "./core";
+import {App, View} from "./core";
 
 
-const app = new core.App();
-const view = new core.View(fs.realpathSync('./views'));
+const app = new App();
+const view = new View(fs.realpathSync('./views'));
 app.register([require('./controller/Controller')]);
 app.start();

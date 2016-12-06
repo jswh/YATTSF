@@ -1,13 +1,11 @@
-import core from "../core"
-import {HttpRequest} from '../core/Request';
-import {HttpResponse} from '../core/Response';
+import {Router, HttpRequest, HttpResponse} from "../core"
 
 export class Controller {
     constructor() {
 
     }
 
-    @core.Router.route("GET", '/')
+    @Router.get('/')
     hello(req:HttpRequest, res:HttpResponse, next) {
         res.setContent('hello');
         next();

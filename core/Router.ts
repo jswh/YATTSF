@@ -8,17 +8,6 @@ var resitered:UrlMappingPool = {
     PUT: [],
     DELETE: []
 };
-
-export function mapping(method:string, url: string): mvc.Handler | false {
-    let nm:UrlMapping;
-    for (nm of resitered[method.toUpperCase()]) {
-        if (nm.url == url) {
-            return nm.handler;
-        }
-    }
-    return false;
-} 
-
 export function route(method: http.Method, url: string) {
     return  function(target, propertyKey: string, descriptor: PropertyDescriptor) {
         resitered[method].push({
@@ -27,19 +16,32 @@ export function route(method: http.Method, url: string) {
         })
     };
 }
+class RouterWraper {
+    mapping(method:string, url: string): mvc.Handler | false {
+        let nm:UrlMapping;
+        for (nm of resitered[method.toUpperCase()]) {
+            if (nm.url == url) {
+                return nm.handler;
+            }
+        }
+        return false;
+    } 
 
-export function get(url: string) {
-    return route('GET', url);
-}
 
-export function post(url: string) {
-    return route('POST', url);
-}
+    get(url: string) {
+        return route('GET', url);
+    }
 
-export function put(url: string) {
-    return route('PUT', url);
-}
+    post(url: string) {
+        return route('POST', url);
+    }
 
-export function DELETE(url: string) {
-    return route('DELETE', url);
+    put(url: string) {
+        return route('PUT', url);
+    }
+
+    DELETE(url: string) {
+        return route('DELETE', url);
+    }
 }
+export const Router = new RouterWraper();
