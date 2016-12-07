@@ -1,5 +1,6 @@
 import * as http from '../helper/http';
 import * as mvc from '../helper/mvc';
+
 interface UrlMapping { url: string, handler(): any };
 interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[]}
 var resitered:UrlMappingPool = {
@@ -12,10 +13,17 @@ export function route(method: http.Method, url: string) {
     return  function(target, propertyKey: string, descriptor: PropertyDescriptor) {
         resitered[method].push({
             url: url,
-            handler: target[propertyKey]
+            handler: (req) => {return pack(target[propertyKey], req)}
         })
     };
 }
+
+function pack(handler:mvc.Handler, req) {
+    return new Promise((resolve, reject)=> {
+        resolve(handler(req));
+    })
+}
+
 class RouterWraper {
     mapping(method:string, url: string): mvc.Handler | false {
         let nm:UrlMapping;

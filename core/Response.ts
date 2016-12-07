@@ -1,4 +1,3 @@
-/// <reference path="../typings/globals/node/index.d.ts" />
 import * as http from 'http';
 
 export class HttpResponse {

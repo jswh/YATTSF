@@ -6,8 +6,7 @@ export class Controller {
     }
 
     @Router.get('/')
-    hello(req:HttpRequest, res:HttpResponse, next) {
-        res.setContent('hello');
-        next();
+    hello(req:HttpRequest) {
+        return 'hello';
     }
 }
