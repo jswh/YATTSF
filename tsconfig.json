@@ -1,11 +1,21 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
+        "lib": ["es5", "es6", "dom"],
+        "outDir": "build/compiled",
         "target": "es5",
         "module": "commonjs",
-        "outDir": "dist",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "sourceMap": true
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "declaration": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "stripInternal": true,
+        "pretty": true,
+        "strictNullChecks": true
     },
     "exclude": [
         "node_modules",
