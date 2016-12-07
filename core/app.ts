@@ -24,10 +24,4 @@ export class App {
     start() {
         this.httpServer.listen(3000, '127.0.0.1')
     }
-
-    register(controllers) {
-        for(let controller of controllers) {
-            this.controllers.push(controller.Controller());
-        }
-    }
 }

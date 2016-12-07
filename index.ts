@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import {App, View} from "./core";
+import * as ctr from "./controller";
 
 const app = new App();
-const view = new View(fs.realpathSync('./views'));
-app.register([require('./controller/Controller')]);
+new ctr.HelloController();
 app.start();
