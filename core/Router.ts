@@ -1,7 +1,7 @@
 import * as http from '../helper/http';
 import * as mvc from '../helper/mvc';
 
-interface UrlMapping { url: string, handler(): any };
+interface UrlMapping { url: string, handler(): PromiseLike<any> };
 interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[]}
 var resitered:UrlMappingPool = {
     GET: [],
