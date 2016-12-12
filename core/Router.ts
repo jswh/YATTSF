@@ -1,8 +1,8 @@
 import * as http from '../helper/http';
 import * as mvc from '../helper/mvc';
 
-interface UrlMapping { url: string, handler(): PromiseLike<any> };
-interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[]}
+interface UrlMapping { url: string, handler(req:any): PromiseLike<any> };
+interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[], [key:string]:UrlMapping[]}
 var resitered:UrlMappingPool = {
     GET: [],
     POST: [],
@@ -10,7 +10,7 @@ var resitered:UrlMappingPool = {
     DELETE: []
 };
 export function route(method: http.Method, url: string) {
-    return  function(target, propertyKey: string, descriptor: PropertyDescriptor) {
+    return  function(target:any, propertyKey: string, descriptor: PropertyDescriptor) {
         resitered[method].push({
             url: url,
             handler: (req) => {return pack(target[propertyKey], req)}
@@ -18,7 +18,7 @@ export function route(method: http.Method, url: string) {
     };
 }
 
-function pack(handler:mvc.Handler, req) {
+function pack(handler:mvc.Handler, req:any) {
     return new Promise((resolve, reject)=> {
         resolve(handler(req));
     })
@@ -26,6 +26,9 @@ function pack(handler:mvc.Handler, req) {
 
 class RouterWraper {
     mapping(method:string, url: string): mvc.Handler | false {
+        if (typeof(method) !== 'string') {
+            return false;
+        }
         let nm:UrlMapping;
         for (nm of resitered[method.toUpperCase()]) {
             if (nm.url == url) {

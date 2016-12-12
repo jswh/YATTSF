@@ -1,14 +1,16 @@
 import * as http from 'http';
 
 export class HttpResponse {
-    private raw: http.ServerResponse
     private content: string
     private code = 200;
-    private headers = {"content-type": "application/json"}
+    private headers: any;
     private encode = 'utf-8';
 
-    constructor(req:http.ServerResponse) {
-        this.raw = req;
+    constructor() {
+    }
+
+    public addHeader(name:string, value:string) {
+        this.headers[name] = value
     }
 
     public setContent(content: any) {
@@ -25,11 +27,11 @@ export class HttpResponse {
         this.code = code;
     }
 
-    public send() {
-        this.raw.writeHead(this.code, this.headers);
+    public send(raw: http.ServerResponse) {
+        raw.writeHead(this.code, this.headers);
         if (this.content) {
-            this.raw.write(this.content);
+            raw.write(this.content);
         }
-        this.raw.end();
+        raw.end();
     }
 }
