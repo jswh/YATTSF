@@ -1,15 +1,13 @@
 import * as http from 'http';
 import {HttpRequest} from './Request';
 import {HttpResponse} from './Response';
-import "reflect-metadata";
 import {Router} from './Router';
-import {createConnection} from 'typeorm'
 
 export class App {
     private httpServer: http.Server;
     private controllers = [];
     constructor() {
-        this.httpServer = http.createServer(async (request, response) => {
+        this.httpServer = http.createServer(async (request:http.IncomingMessage, response:http.ServerResponse) => {
             let body = "";
             request.on('data', (chunk) => {
                 body = body.concat(chunk.toString())
@@ -46,11 +44,7 @@ export class App {
         }
         res.send(response);
     }
-    async initDatabase() {
-        await createConnection();
-    }
     async start() {
-        await this.initDatabase()
         this.httpServer.listen(3000, '127.0.0.1')
     }
 }

@@ -24,7 +24,7 @@ function pack(handler:mvc.Handler, req:any) {
     })
 }
 
-class RouterWraper {
+export class RouterWraper {
     mapping(method:string, url: string): mvc.Handler | false {
         if (typeof(method) !== 'string') {
             return false;

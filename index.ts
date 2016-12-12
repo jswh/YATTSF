@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import {App, View} from "./core";
 import * as ctr from "./controller";
 
