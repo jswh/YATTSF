@@ -1,11 +1,11 @@
 {
-  "name": "YATTSF",
+  "name": "tattsf",
   "version": "0.0.1",
   "description": "yet another typescript toy framework",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ./build/compiled/index.js",
+    "start": "node ./build/compiled/app.js",
     "clean": "rm -Rf dist build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,9 +14,8 @@
     "url": "git@github.com:jswh/YATTSF.git"
   },
   "author": "jswh",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "dependencies": {
-    "es6-promise": "^4.0.5"
   },
   "devDependencies": {
     "@types/node": "0.0.2",

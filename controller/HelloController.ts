@@ -1,5 +1,4 @@
-import {Router, HttpRequest, HttpResponse} from "../core"
-import {BaseController} from './BaseController'
+import {Router, HttpRequest, HttpResponse, BaseController} from "../core"
 
 export class HelloController extends BaseController {
     @Router.get('/')

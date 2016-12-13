@@ -3,9 +3,10 @@ import {HttpRequest} from './Request';
 import {HttpResponse} from './Response';
 import {Router} from './Router';
 
-export class App {
+export class Server {
     private httpServer: http.Server;
     private controllers = [];
+
     constructor() {
         this.httpServer = http.createServer(async (request:http.IncomingMessage, response:http.ServerResponse) => {
             let body = "";
@@ -13,11 +14,12 @@ export class App {
                 body = body.concat(chunk.toString())
             });
             request.on('end', () => {
-                this.fire_request(request, response, body)
+                this.fireRequest(request, response, body)
             })
         });
     }
-    async fire_request(request:http.IncomingMessage, response:http.ServerResponse, body:string) {
+
+    async fireRequest(request:http.IncomingMessage, response:http.ServerResponse, body:string) {
         let req = new HttpRequest(request, body), res = new HttpResponse();
         if (req.method == undefined) {
             res.setStatusCode(405);
@@ -44,7 +46,8 @@ export class App {
         }
         res.send(response);
     }
-    async start() {
-        this.httpServer.listen(3000, '127.0.0.1')
+
+    async start(port: number, host: string) {
+        this.httpServer.listen(port, host)
     }
 }
