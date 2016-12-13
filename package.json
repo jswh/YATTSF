@@ -1,12 +1,13 @@
 {
   "name": "yattsf",
-  "version": "0.0.1",
+  "version": "0.0.2-dev",
   "description": "yet another typescript toy framework",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
     "start": "node ./build/compiled/app.js",
     "clean": "rm -Rf dist build",
+    "publish": "cp package.json build/compiled && cp README.md build/compiled &&npm publish build/compiled",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
