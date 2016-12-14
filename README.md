@@ -5,7 +5,7 @@
 ## example
 
     //controller.ts
-    import {Router, HttpRequest, HttpResponse, BaseController} from "../core"
+    import {Router, HttpRequest, BaseController} from "yattsf"
 
     export class HelloController extends BaseController {
         @Router.get('/')

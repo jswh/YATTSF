@@ -1,7 +1,7 @@
 {
   "name": "yattsf",
   "version": "0.0.2",
-  "description": "yet another typescript toy framework",
+  "description": "yet another toy typescript framework",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
