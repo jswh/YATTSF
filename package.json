@@ -1,6 +1,6 @@
 {
   "name": "yattsf",
-  "version": "0.0.2-dev",
+  "version": "0.0.2",
   "description": "yet another typescript toy framework",
   "main": "index.js",
   "scripts": {
