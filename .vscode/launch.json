@@ -8,9 +8,9 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}/index.ts",
+            "program": "${workspaceRoot}/build/compiled/app.js",
             "cwd": "${workspaceRoot}",
-            "outFiles": ["${workspaceRoot}/dist/index.js"],
+            "outFiles": ["${workspaceRoot}/build/compiled/app.js"],
             "sourceMaps": true
         },
         {
@@ -18,7 +18,7 @@
             "request": "attach",
             "name": "Attach to Process",
             "port": 5858,
-            "outFiles": [],
+            "outFiles": ["${workspaceRoot}/build/compiled/app.js"],
             "sourceMaps": true
         }
     ]
