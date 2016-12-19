@@ -25,7 +25,7 @@ export class HttpRequest {
         this.body = querystring.parse(body);
         this.body['raw'] = body;
         this.headers = this.raw.headers;
-        this.cookies = cookie.parse(this.raw.headers.cookie);
+        this.cookies = cookie.parse(this.raw.headers.cookie || "");
     }
 
 }

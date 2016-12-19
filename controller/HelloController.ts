@@ -1,6 +1,7 @@
-import {Router, HttpRequest, HttpResponse, BaseController} from "../core"
+import {routable, Router, HttpRequest, HttpResponse} from "../core"
 
-export class HelloController extends BaseController {
+@routable()
+export class HelloController {
     @Router.get('/hello')
     @Router.get('/hello/(.*)')
     hello(req:HttpRequest) {

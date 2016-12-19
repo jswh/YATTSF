@@ -57,3 +57,9 @@ export class HttpResponse {
         raw.end();
     }
 }
+
+export const abort = (code:any) => {
+    let res = new HttpResponse()
+    res.setStatusCode(code);
+    return res;
+}

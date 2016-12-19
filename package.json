@@ -1,8 +1,8 @@
 {
   "name": "yattsf",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "yet another toy typescript framework",
-  "main": "index.js",
+  "main": "./build/compiled/app.js",
   "scripts": {
     "build": "tsc",
     "start": "node ./build/compiled/app.js",

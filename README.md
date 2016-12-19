@@ -4,10 +4,11 @@
 
 ## example
 
-    //controller.ts
-    import {Router, HttpRequest, BaseController} from "yattsf"
+    //HelloController.ts
+    import {routable, Router, HttpRequest, HttpResponse} from "../core"
 
-    export class HelloController extends BaseController {
+    @routable()
+    export class HelloController {
         @Router.get('/hello')
         @Router.get('/hello/(.*)')
         hello(req:HttpRequest) {
@@ -24,7 +25,6 @@
     import {Server, HelloController} from 'yattsf';
 
     const app = new Server();
-    new HelloController();
     app.start(3000, '127.0.0.1')
 
 Build and start your app, then try "http://127.0.0.1:3000/hello" and "http://127.0.0.1:3000/hello/YATTSF" in browser.
