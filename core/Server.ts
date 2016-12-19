@@ -21,7 +21,6 @@ export class Server {
 
     async fireRequest(request:http.IncomingMessage, response:http.ServerResponse, body:string) {
         let req = new HttpRequest(request, body), res = new HttpResponse();
-        console.log(req.getHeader());
         if (req.method == undefined) {
             res.setStatusCode(405);
         } else {

@@ -8,22 +8,26 @@ export class HttpResponse {
     private headers: any;
     private encode = 'utf-8';
 
-    private cookies: any;
+    private cookies: any = {};
     constructor() {
     }
 
-    public addHeader(name:string, value:string) {
+    public addHeader(name:string, value:string): HttpResponse {
         this.headers[name] = value
+
+        return this;
     }
 
-    public addCookie(name:string, value:string, options:CookieOptions) {
+    public addCookie(name:string, value:string, options:CookieOptions = {}): HttpResponse {
         this.cookies[name] = {
             value: value,
             options: options
         };
+
+        return this;
     }
 
-    public setContent(content: any) {
+    public setContent(content: any): HttpResponse {
         switch(typeof(content)) {
             case 'object':
                 this.content = JSON.stringify(content);
@@ -31,18 +35,22 @@ export class HttpResponse {
             default:
                 this.content = content.toString();
         }
+
+        return this;
     }
 
-    public setStatusCode(code: number) {
+    public setStatusCode(code: number): HttpResponse {
         this.code = code;
+
+        return this;
     }
 
     public send(raw: http.ServerResponse) {
-        raw.writeHead(this.code, this.headers);
         for (let c in this.cookies) {
             let theCookie = this.cookies[c];
             raw.setHeader('Set-Cookie', cookie.serialize(c, theCookie.value, theCookie.options));
         }
+        raw.writeHead(this.code, this.headers);
         if (this.content) {
             raw.write(this.content);
         }

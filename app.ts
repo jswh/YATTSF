@@ -1,4 +1,4 @@
-import {Server, View, HelloController} from "./core";
+import {Server, HelloController} from "./core";
 
 const app = new Server();
 new HelloController();
