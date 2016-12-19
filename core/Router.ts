@@ -1,6 +1,5 @@
 import * as http from '../helper/http';
 import * as mvc from '../helper/mvc';
-import * as BaseController from './BaseController'
 
 interface UrlMapping { url: string, handler(req:any): PromiseLike<any> };
 interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[], [key:string]:UrlMapping[]}
