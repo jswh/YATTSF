@@ -4,7 +4,8 @@ import * as cookie from 'cookie';
 export class HttpRequest {
     private raw: http.IncomingMessage
 
-    public path: string
+    public path: string;
+    public pathParams: RegExpMatchArray;
     public query: any = {};
     public body: any;
     public method: string | undefined;

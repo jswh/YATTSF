@@ -24,12 +24,14 @@ export class Server {
         if (req.method == undefined) {
             res.setStatusCode(405);
         } else {
-            let func = Router.mapping(req.method ,req.path)
-            if(!func) {
+            let routeResult = Router.mapping(req.method ,req.path)
+            if(!routeResult) {
                 res.setStatusCode(404);
             } else {
                 try {
-                    let data = await func(req);
+                    routeResult.matches.shift();
+                    req.pathParams = routeResult.matches;
+                    let data = await routeResult.handler(req);
                     if (typeof(data) == 'string') {
                         res.setContent(data);
                     } else if (data instanceof HttpResponse) {

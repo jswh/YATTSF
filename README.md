@@ -8,9 +8,14 @@
     import {Router, HttpRequest, BaseController} from "yattsf"
 
     export class HelloController extends BaseController {
-        @Router.get('/')
+        @Router.get('/hello')
+        @Router.get('/hello/(.*)')
         hello(req:HttpRequest) {
-            return 'hello';
+            let name = req.pathParams.length > 0 ? req.pathParams[0] : 'World';
+            const res = new HttpResponse();
+            res.setContent(`Hello ${name} !`).addCookie('hello-name', name);
+
+            return res;
         }
     }
 
@@ -21,3 +26,5 @@
     const app = new Server();
     new HelloController();
     app.start(3000, '127.0.0.1')
+
+Build and start your app, then try "http://127.0.0.1:3000/hello" and "http://127.0.0.1:3000/hello/YATTSF" in browser.

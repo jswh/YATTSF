@@ -3,6 +3,8 @@ import * as mvc from '../helper/mvc';
 
 interface UrlMapping { url: string, handler(req:any): PromiseLike<any> };
 interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[], [key:string]:UrlMapping[]}
+
+export interface UrlMatch {matches: RegExpMatchArray, handler(req:any): PromiseLike<any>};
 var resitered:UrlMappingPool = {
     GET: [],
     POST: [],
@@ -25,14 +27,18 @@ function pack(handler:mvc.Handler, req:any) {
 }
 
 export class RouterWraper {
-    mapping(method:string, url: string): mvc.Handler | false {
+    mapping(method:string, url: string): UrlMatch | false {
         if (typeof(method) !== 'string') {
             return false;
         }
         let nm:UrlMapping;
         for (nm of resitered[method.toUpperCase()]) {
-            if (nm.url == url) {
-                return nm.handler;
+            let matches = url.match(nm.url)
+            if (matches && matches.length > 0) {
+                return {
+                    matches: matches,
+                    handler: nm.handler
+                }
             }
         }
         return false;
