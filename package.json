@@ -1,13 +1,13 @@
 {
   "name": "yattsf",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "yet another toy typescript framework",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
     "start": "node ./build/compiled/app.js",
     "clean": "rm -Rf dist build",
-    "publish": "cp ./package.json ./build/compiled/ && cp ./README.md ./build/compiled/ && cd ./build/compiled/ && npm publish",
+    "publish": "npm run clean && npm run build && cp ./package.json ./build/compiled/ && cp ./README.md ./build/compiled/ && cd ./build/compiled && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
