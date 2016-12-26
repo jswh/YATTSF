@@ -3,9 +3,9 @@ import {CookieOptions} from '../helper/http'
 import * as cookie from 'cookie'
 
 export class HttpResponse {
-    private content: string
+    private content: string = '';
     private code = 200;
-    private headers: any;
+    private headers: any = {};
     private encode = 'utf-8';
 
     private cookies: any = {};
