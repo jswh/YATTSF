@@ -4,7 +4,7 @@ import { HttpResponse } from './Response';
 
 interface UrlMapping { url: string, handler(req:any): PromiseLike<any> };
 interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[], [key:string]:UrlMapping[]}
-
+interface AjaxOption { 'allowMethods': http.Method[], 'allowOrigin': string }
 export interface UrlMatch {matches: RegExpMatchArray, handler(req:any): PromiseLike<any>};
 function getEmptyPool(): UrlMappingPool {
     return {
@@ -18,7 +18,7 @@ function getEmptyPool(): UrlMappingPool {
 var controllerRoutes:{[key:string]:any[]} = {};
 var registeredUrl:{[key:string]: UrlMappingPool} = {};
 
-function route(method: http.Method, url: string, optionsAcceptions: false | http.Method[] = false) {
+function route(method: http.Method, url: string, ajaxOption: false | AjaxOption = false) {
     return  function(target:any, propertyKey: string, descriptor: PropertyDescriptor) {
         let name = target.constructor.name;
         if (typeof registeredUrl[name] == 'undefined') {
@@ -28,11 +28,13 @@ function route(method: http.Method, url: string, optionsAcceptions: false | http
             url: url,
             handler: (req:any) => {return pack(target[propertyKey], req)}
         })
-        if (optionsAcceptions) {
-            registeredUrl[target.constructor.name][method].push({
+        if (ajaxOption) {
+            registeredUrl[target.constructor.name]['OPTIONS'].push({
                 url: url,
                 handler: (req:any) => {return pack(() => {
-                    return (new HttpResponse).addHeader('Allow', optionsAcceptions.join(', '));
+                    return (new HttpResponse)
+                    .addHeader('Allow', ajaxOption.allowMethods.join(', '))
+                    .addHeader('Access-Control-Allow-Origin', ajaxOption.allowOrigin);
                 }, req)}
             })
         }
@@ -65,9 +67,7 @@ export class RouterWraper {
             return false;
         }
         for (let prefixOfCtr in controllerRoutes) {
-            console.log(prefixOfCtr);
             let ctrMatches = url.match('^' + prefixOfCtr);
-            console.log(ctrMatches);
             if (ctrMatches) {
                 let ctrName;
                 for (ctrName of controllerRoutes[prefixOfCtr]) {
@@ -89,20 +89,21 @@ export class RouterWraper {
     }
 
 
-    get(url: string, ajax:boolean = false) {
-        return ajax ? route('GET', url, ['GET']) : route('GET', url);
+    get(url: string, ajaxAllowOrigin:false | string = false) {
+        return ajaxAllowOrigin ? route('GET', url, {allowMethods: ['GET'], allowOrigin: ajaxAllowOrigin}) : route('GET', url);
     }
 
-    post(url: string, ajax:boolean = false) {
-        return ajax ? route('POST', url, ['POST']) : route('POST', url);
+    post(url: string, ajaxAllowOrigin:false | string = false) {
+        return ajaxAllowOrigin ? route('POST', url, {allowMethods: ['POST'], allowOrigin: ajaxAllowOrigin}) : route('POST', url);
     }
 
-    put(url: string, ajax:boolean = false) {
-        return ajax ? route('PUT', url, ['PUT']) : route('PUT', url);
+    put(url: string, ajaxAllowOrigin:false | string = false) {
+        return ajaxAllowOrigin ? route('PUT', url, {allowMethods: ['PUT'], allowOrigin: ajaxAllowOrigin}) : route('PUT', url);
     }
 
-    delete(url: string, ajax:boolean = false) {
-        return ajax ? route('DELETE', url, ['DELETE']) : route('DELETE', url);
+    delete(url: string, ajaxAllowOrigin:false | string = false) {
+        return ajaxAllowOrigin ? route('DELETE', url, {allowMethods: ['DELETE'], allowOrigin: ajaxAllowOrigin}) : route('DELETE', url);
     }
 }
+
 export const Router = new RouterWraper();
