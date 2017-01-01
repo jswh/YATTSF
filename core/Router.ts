@@ -32,9 +32,11 @@ function route(method: http.Method, url: string, ajaxOption: false | AjaxOption 
             registeredUrl[target.constructor.name]['OPTIONS'].push({
                 url: url,
                 handler: (req:any) => {return pack(() => {
+                    let allowMethods = ajaxOption.allowMethods.join(', ');
                     return (new HttpResponse)
-                    .addHeader('Allow', ajaxOption.allowMethods.join(', '))
-                    .addHeader('Access-Control-Allow-Origin', ajaxOption.allowOrigin);
+                    .addHeader('Allow', allowMethods)
+                    .addHeader('Access-Control-Allow-Origin', ajaxOption.allowOrigin)
+                    .addHeader('Access-Control-Allow-Methods', allowMethods);
                 }, req)}
             })
         }
