@@ -1,5 +1,6 @@
 import * as http from '../helper/http';
 import * as mvc from '../helper/mvc';
+import { HttpResponse } from './Response';
 
 interface UrlMapping { url: string, handler(req:any): PromiseLike<any> };
 interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[], [key:string]:UrlMapping[]}
@@ -10,13 +11,14 @@ function getEmptyPool(): UrlMappingPool {
         GET: [],
         POST: [],
         PUT: [],
-        DELETE: []
+        DELETE: [],
+        OPTIONS: []
     };
 }
 var controllerRoutes:{[key:string]:any[]} = {};
 var registeredUrl:{[key:string]: UrlMappingPool} = {};
 
-function route(method: http.Method, url: string) {
+function route(method: http.Method, url: string, optionsAcceptions: false | http.Method[] = false) {
     return  function(target:any, propertyKey: string, descriptor: PropertyDescriptor) {
         let name = target.constructor.name;
         if (typeof registeredUrl[name] == 'undefined') {
@@ -26,6 +28,14 @@ function route(method: http.Method, url: string) {
             url: url,
             handler: (req:any) => {return pack(target[propertyKey], req)}
         })
+        if (optionsAcceptions) {
+            registeredUrl[target.constructor.name][method].push({
+                url: url,
+                handler: (req:any) => {return pack(() => {
+                    return (new HttpResponse).addHeader('Allow', optionsAcceptions.join(', '));
+                }, req)}
+            })
+        }
     };
 }
 
@@ -79,20 +89,20 @@ export class RouterWraper {
     }
 
 
-    get(url: string) {
-        return route('GET', url);
+    get(url: string, ajax:boolean = false) {
+        return ajax ? route('GET', url, ['GET']) : route('GET', url);
     }
 
-    post(url: string) {
-        return route('POST', url);
+    post(url: string, ajax:boolean = false) {
+        return ajax ? route('POST', url, ['POST']) : route('POST', url);
     }
 
-    put(url: string) {
-        return route('PUT', url);
+    put(url: string, ajax:boolean = false) {
+        return ajax ? route('PUT', url, ['PUT']) : route('PUT', url);
     }
 
-    DELETE(url: string) {
-        return route('DELETE', url);
+    delete(url: string, ajax:boolean = false) {
+        return ajax ? route('DELETE', url, ['DELETE']) : route('DELETE', url);
     }
 }
 export const Router = new RouterWraper();
