@@ -52,14 +52,16 @@ export class HttpResponse {
         }
         raw.writeHead(this.code, this.headers);
         if (this.content) {
-            raw.write(this.content);
+            let content = typeof(this.content) == 'object' ? JSON.stringify(this.content) : this.content;
+            raw.write(content);
         }
         raw.end();
     }
 }
 
-export const abort = (code:any) => {
+export const abort = (code:any, reason:any = '') => {
     let res = new HttpResponse()
     res.setStatusCode(code);
+    res.setContent(reason);
     return res;
 }
