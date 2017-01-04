@@ -1,11 +1,12 @@
 import * as http from '../helper/http';
 import * as mvc from '../helper/mvc';
 import { HttpResponse } from './Response';
+import { HttpRequest } from './Request';
 
-interface UrlMapping { url: string, handler(req:any): PromiseLike<any> };
+interface UrlMapping { url: string, handler(req:HttpRequest, res:HttpResponse): PromiseLike<[HttpRequest, HttpResponse]> };
 interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[], [key:string]:UrlMapping[]}
 interface AjaxOption { 'allowMethods': http.Method[], 'allowOrigin': string }
-export interface UrlMatch {matches: RegExpMatchArray, handler(req:any): PromiseLike<any>};
+export interface UrlMatch {matches: RegExpMatchArray, handler(req:HttpRequest, res:HttpResponse): PromiseLike<[HttpRequest, HttpResponse]>};
 function getEmptyPool(): UrlMappingPool {
     return {
         GET: [],
@@ -26,18 +27,21 @@ function route(method: http.Method, url: string, ajaxOption: false | AjaxOption 
         }
         registeredUrl[target.constructor.name][method].push({
             url: url,
-            handler: (req:any) => {return pack(target[propertyKey], req)}
+            handler: (req:HttpRequest, res:HttpResponse) => {return pack(target[propertyKey], req, res)}
         })
         if (ajaxOption) {
             registeredUrl[target.constructor.name]['OPTIONS'].push({
                 url: url,
-                handler: (req:any) => {return pack(() => {
+                handler: (req:HttpRequest, res: HttpResponse) => {return pack((req:HttpRequest, res:HttpResponse) => {
                     let allowMethods = ajaxOption.allowMethods.join(', ');
-                    return (new HttpResponse)
-                    .addHeader('Allow', allowMethods)
-                    .addHeader('Access-Control-Allow-Origin', ajaxOption.allowOrigin)
-                    .addHeader('Access-Control-Allow-Methods', allowMethods);
-                }, req)}
+                    return [
+                        req,
+                        (new HttpResponse)
+                            .addHeader('Allow', allowMethods)
+                            .addHeader('Access-Control-Allow-Origin', ajaxOption.allowOrigin)
+                            .addHeader('Access-Control-Allow-Methods', allowMethods)
+                    ];
+                }, req, res)}
             })
         }
     };
@@ -57,9 +61,9 @@ export function routable(prefix: string = '/'): Function {
     }
 }
 
-function pack(handler:mvc.Handler, req:any) {
+function pack(handler:mvc.Handler, req:HttpRequest, res:HttpResponse) {
     return new Promise((resolve, reject)=> {
-        resolve(handler(req));
+        resolve(handler(req, res));
     })
 }
 

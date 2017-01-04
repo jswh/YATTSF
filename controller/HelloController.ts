@@ -4,9 +4,8 @@ import {routable, Router, HttpRequest, HttpResponse} from "../core"
 export class HelloController {
     @Router.get('/hello')
     @Router.get('/hello/(.*)')
-    hello(req:HttpRequest) {
+    hello(req:HttpRequest, res: HttpResponse) {
         let name = req.pathParams.length > 0 ? req.pathParams[0] : 'World';
-        const res = new HttpResponse();
         res.setContent(`Hello ${name} !`).addCookie('hello-name', name);
 
         return res;

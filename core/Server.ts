@@ -32,17 +32,9 @@ export class Server {
                 try {
                     routeResult.matches.shift();
                     req.pathParams = routeResult.matches;
-                    let data = await routeResult.handler(req);
-                    if (typeof(data) == 'string') {
-                        res.setContent(data);
-                    } else if (data instanceof HttpResponse) {
-                        res = data;
-                    } else {
-                        res.addHeader('Content-Type', 'application/json')
-                        res.setContent(JSON.stringify(data));
-                    }
+                    [req, res] = await routeResult.handler(req, res);
                 } catch (e) {
-                    console.log(e)
+                    res = new HttpResponse();
                     res.setStatusCode(500);
                 }
             }
