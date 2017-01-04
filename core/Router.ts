@@ -112,4 +112,17 @@ export class RouterWraper {
     }
 }
 
+export function before(processor: mvc.Handler) {
+    return (controller:any, handler:string, handlerDescriptor: PropertyDescriptor) => {
+        let originHandler:mvc.Handler = controller[handler]
+        return {
+            value: (req:HttpRequest, res:HttpResponse) => {
+                console.log('middle')
+                let result = processor(req, res);
+                return originHandler(result[0], result[1]);
+            }
+        }
+    }
+}
+
 export const Router = new RouterWraper();

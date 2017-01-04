@@ -2,7 +2,6 @@ import * as http from 'http';
 import {HttpRequest} from './Request';
 import {HttpResponse} from './Response';
 import {Router} from './Router';
-import 'reflect-metadata'
 
 export class Server {
     private httpServer: http.Server;
