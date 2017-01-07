@@ -63,5 +63,5 @@ export const abort = (code:any, reason:any = '') => {
     let res = new HttpResponse()
     res.setStatusCode(code);
     res.setContent(reason);
-    return res;
+    return [{}, res];
 }

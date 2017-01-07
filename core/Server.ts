@@ -35,6 +35,7 @@ export class Server {
                 } catch (e) {
                     res = new HttpResponse();
                     res.setStatusCode(500);
+                    console.log(e);
                 }
             }
         }
