@@ -1,9 +1,10 @@
 import * as http from 'http';
 import {CookieOptions} from '../helper/http'
 import * as cookie from 'cookie'
+import {View} from './View'
 
 export class HttpResponse {
-    private content: string = '';
+    private content: any;
     private code = 200;
     private headers: any = {};
     private encode = 'utf-8';
@@ -28,13 +29,7 @@ export class HttpResponse {
     }
 
     public setContent(content: any): HttpResponse {
-        switch(typeof(content)) {
-            case 'object':
-                this.content = JSON.stringify(content);
-                break;
-            default:
-                this.content = content.toString();
-        }
+        this.content = content;
 
         return this;
     }
@@ -45,15 +40,19 @@ export class HttpResponse {
         return this;
     }
 
-    public send(raw: http.ServerResponse) {
+    async send(raw: http.ServerResponse) {
         for (let c in this.cookies) {
             let theCookie = this.cookies[c];
             raw.setHeader('Set-Cookie', cookie.serialize(c, theCookie.value, theCookie.options));
         }
         raw.writeHead(this.code, this.headers);
         if (this.content) {
-            let content = typeof(this.content) == 'object' ? JSON.stringify(this.content) : this.content;
-            raw.write(content);
+            if (this.content instanceof View) {
+                let html = await this.content.render()
+                raw.write(html)
+            } else {
+                raw.write(typeof(this.content) == 'string' ? this.content : JSON.stringify(this.content))
+            }
         }
         raw.end();
     }
