@@ -3,10 +3,10 @@ import * as mvc from '../helper/mvc';
 import { HttpResponse } from './Response';
 import { HttpRequest } from './Request';
 
-interface UrlMapping { url: string, handler(req:HttpRequest, res:HttpResponse): PromiseLike<[HttpRequest, HttpResponse]> };
+interface UrlMapping { url: string, handler: mvc.Handler };
 interface UrlMappingPool {GET: UrlMapping[], POST:UrlMapping[], PUT:UrlMapping[], DELETE: UrlMapping[], [key:string]:UrlMapping[]}
 interface AjaxOption { 'allowMethods': http.Method[], 'allowOrigin': string }
-export interface UrlMatch {matches: RegExpMatchArray, handler(req:HttpRequest, res:HttpResponse): PromiseLike<[HttpRequest, HttpResponse]>};
+export interface UrlMatch {matches: RegExpMatchArray, handler: mvc.Handler};
 function getEmptyPool(): UrlMappingPool {
     return {
         GET: [],
@@ -21,18 +21,16 @@ var registeredUrl:{[key:string]: UrlMappingPool} = {};
 
 function route(method: http.Method, url: string, ajaxOption: false | AjaxOption = false) {
     return  function(target:any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let handler = target[propertyKey]
         let name = target.constructor.name;
         if (typeof registeredUrl[name] == 'undefined') {
             registeredUrl[name] = getEmptyPool();
         }
-        registeredUrl[target.constructor.name][method].push({
-            url: url,
-            handler: (req:HttpRequest, res:HttpResponse) => {return pack(target[propertyKey], req, res)}
-        })
+
         if (ajaxOption) {
             registeredUrl[target.constructor.name]['OPTIONS'].push({
                 url: url,
-                handler: (req:HttpRequest, res: HttpResponse) => {return pack((req:HttpRequest, res:HttpResponse) => {
+                handler: async (req:HttpRequest, res: HttpResponse) => {
                     let allowMethods = ajaxOption.allowMethods.join(', ');
                     return [
                         req,
@@ -41,9 +39,20 @@ function route(method: http.Method, url: string, ajaxOption: false | AjaxOption 
                             .addHeader('Access-Control-Allow-Origin', ajaxOption.allowOrigin)
                             .addHeader('Access-Control-Allow-Methods', allowMethods)
                     ];
-                }, req, res)}
+                }
             })
+            handler = async (req:HttpRequest, res:HttpResponse) => {
+                [req, res] = await target[propertyKey](req, res);
+                res.addHeader('Access-Control-Allow-Origin', ajaxOption.allowOrigin);
+
+                return [req, res];
+            }
         }
+
+        registeredUrl[target.constructor.name][method].push({
+            url: url,
+            handler: async (req:HttpRequest, res:HttpResponse) => {return await handler(req, res)}
+        })
     };
 }
 
@@ -59,12 +68,6 @@ export function routable(prefix: string = '/'): Function {
 
         controllerRoutes[prefix].unshift(name);
     }
-}
-
-function pack(handler:mvc.Handler, req:HttpRequest, res:HttpResponse) {
-    return new Promise((resolve, reject)=> {
-        resolve(handler(req, res));
-    })
 }
 
 export class RouterWraper {
@@ -116,10 +119,10 @@ export function before(processor: mvc.Handler) {
     return (controller:any, handler:string, handlerDescriptor: PropertyDescriptor) => {
         let originHandler:mvc.Handler = controller[handler]
         return {
-            value: (req:HttpRequest, res:HttpResponse) => {
+            value: async (req:HttpRequest, res:HttpResponse) => {
                 console.log('middle')
-                let result = processor(req, res);
-                return originHandler(result[0], result[1]);
+                let result = await processor(req, res);
+                return await originHandler(result[0], result[1]);
             }
         }
     }
