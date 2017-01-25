@@ -21,6 +21,7 @@
     "pug": "^2.0.0-beta6"
   },
   "devDependencies": {
+    "@types/cookie": "^0.1.29",
     "@types/node": "0.0.2",
     "@types/pug": "^2.0.4",
     "typescript": "^2.2.0-dev.20161206",
