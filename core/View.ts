@@ -1,7 +1,4 @@
 import * as pug from 'pug';
-export interface renderOpts {
-
-}
 
 var renderers = {}
 export class View {
@@ -24,8 +21,6 @@ export class View {
                 if (error) {
                     reject(error)
                 } else {
-                    console.log('render')
-                    console.log(res)
                     resolve(res)
                 }
             })
