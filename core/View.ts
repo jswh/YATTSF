@@ -1,7 +1,9 @@
 import * as pug from 'pug';
-
+export interface renderer {
+    render():PromiseLike<string>
+}
 var renderers = {}
-export class View {
+export class View implements renderer {
     private template:string;
     private data:Object;
     private opts:pug.Options;
@@ -17,7 +19,7 @@ export class View {
         let opts = Object.assign(this.opts, this.data);
 
         return new Promise((resolve, reject) => {
-            pug.renderFile(template, opts, (error, res:string) => {
+            pug.renderFile(template, opts, (error:any, res:string) => {
                 if (error) {
                     reject(error)
                 } else {
